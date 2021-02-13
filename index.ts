@@ -6,6 +6,10 @@ app.post('/', (req, res) => {
   return res.send("hoge")
 })
 
+app.post('/zoom/webhook', (req, res) => {
+  return console.log(req.body)
+})
+
 app.get('/', (req, res) => {
   return res.send("get")
 })
