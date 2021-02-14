@@ -81,11 +81,11 @@ const postRoomStatusMessage = () => {
   })
 }
 
-const searchRoomStatusMessage = () => {
-  client.search.messages({
-    query: "",
-    sort: "timestamp",
-    sort_dir: "desc"
-  })
-}
-client.search.messages()
+// const searchRoomStatusMessage = () => {
+//   client.search.messages({
+//     query: "",
+//     sort: "timestamp",
+//     sort_dir: "desc"
+//   })
+// }
+// client.search.messages()
