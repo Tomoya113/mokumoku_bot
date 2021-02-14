@@ -17,84 +17,62 @@ let ts: any = ""
 const users: string[] = []
 let count = 0;
 
-app.post('/', (req, res) => {
-  return res.send("Hello world")
-})
-
 app.post('/zoom/webhook', (req, res) => {
-  console.log(req.body)
   const user = req.body.payload.object.participant.user_name
   const event = req.body.event
-  let message = ""
-  console.log(user)
   if(event == "meeting.participant_joined") {
     count += 1
     users.push(user)
-    message = `
-      *もくもく会の状況*\n現在の参加人数: ${count}\n現在のメンバー: ${generateRoomMemberText()}
-    `
-    client.chat.postMessage({
-      channel: channel,
-      text: message
-    }).then(response => {
-      ts = response.ts
-    }).then(() => {
-      console.log("sendMessage:", { ts })
-    })
-
+    postRoomStatusMessage()
+    res.send("ok")
   } else if(event == "meeting.participant_left") {
     count -= 1
     if(count < 0) count = 0;
-    const index = users.indexOf(user)
-    users.splice(index, 1)
-
+    users.splice(users.indexOf(user), 1)
     // メッセージを消す
-    client.chat.delete({
-      channel: "C01MHAGJE4F",
-      ts: ts
-    }).then(response => {
-      res.send(response)
-    })
-    
+    deleteRoomStatusMessage()
     // メッセージを送信
-    message = `
-      *もくもく会の状況*\n現在の参加人数: ${count}\n現在のメンバー: ${generateRoomMemberText()}
-    `
-    client.chat.postMessage({
-      channel: channel,
-      text: message
-    }).then(response => {
-      ts = response.ts
-    }).then(() => {
-      console.log("sendMessage:", { ts })
-    })
-    
+    postRoomStatusMessage()
+    res.send("ok")
   } else {
     return res.send("ok")
   }
 })
 
-app.get('/sendMessage', (req, res) => {
-  const message = `
-    *もくもく会の状況*\n参加人数: ${count}\nメンバー: ${generateRoomMemberText()}
-  `
-  client.chat.postMessage({
-    channel: channel,
-    text: message
-  }).then(response => {
-    ts = response.ts
-  }).then(() => {
-    console.log("sendMessage:", { ts })
-  })
-})
-
-app.get('/deleteMessage', (req, res) => {
-  console.log("deleteMessage:", { ts })
-})
-
 app.listen(process.env.PORT || 3000, () => console.log("server is listening"))
+
+const generateRoomStatusText = () => {
+  const text = `
+  *もくもく会の状況*\n現在の参加人数: ${count}\n現在のメンバー: ${generateRoomMemberText()}
+  `
+  return text
+}
 
 const generateRoomMemberText = () => {
   const text = users.join(', ')
   return text
+}
+
+const deleteRoomStatusMessage = () => {
+  client.chat.delete({
+    channel: channel,
+    ts: ts
+  }).then(() => {
+    console.log("deleted message");
+  }).catch( error => {
+    console.log(error);
+  })
+}
+
+const postRoomStatusMessage = () => {
+  client.chat.postMessage({
+    channel: channel,
+    text: generateRoomStatusText()
+  }).then(response => {
+    ts = response.ts
+  }).then(() => {
+    console.log("posted message");
+  }).catch( error => {
+    console.log(error);
+  })
 }
