@@ -36,9 +36,7 @@ app.post('/zoom/webhook', (req, res) => {
     count -= 1
     if(count < 0) count = 0;
     users.splice(users.indexOf(user), 1)
-    // メッセージを消す
     deleteRoomStatusMessage()
-    // メッセージを送信
     postRoomStatusMessage()
     res.send("ok")
   } else {
@@ -83,12 +81,3 @@ const postRoomStatusMessage = () => {
     console.log(error);
   })
 }
-
-// const searchRoomStatusMessage = () => {
-//   client.search.messages({
-//     query: "",
-//     sort: "timestamp",
-//     sort_dir: "desc"
-//   })
-// }
-// client.search.messages()
