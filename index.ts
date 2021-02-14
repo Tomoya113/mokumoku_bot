@@ -45,6 +45,8 @@ app.post('/zoom/webhook', (req, res) => {
   } else if(event == "meeting.participant_left") {
     count -= 1
     if(count < 0) count = 0;
+    const index = users.indexOf(user)
+    users.splice(index, 1)
 
     // メッセージを消す
     client.chat.delete({
