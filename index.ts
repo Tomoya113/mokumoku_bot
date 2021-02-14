@@ -27,6 +27,9 @@ app.post('/zoom/webhook', (req, res) => {
   if(event == "meeting.participant_joined") {
     count += 1
     users.push(user)
+    if(ts !== "") {
+      deleteRoomStatusMessage()
+    }
     postRoomStatusMessage()
     res.send("ok")
   } else if(event == "meeting.participant_left") {
