@@ -14,7 +14,7 @@ const channel =  "C01MHAGJE4F"
 
 // 投稿のIDを保存するやつ
 let ts: any = ""
-const users: string[] = []
+let users: string[] = []
 let count = 0;
 let requestCount = 0;
 
@@ -31,6 +31,7 @@ app.post('/zoom/webhook', (req, res) => {
   if(event == "meeting.participant_joined") {
     count += 1
     users.push(user)
+    console.log("a user joined the meeting", `currentUser: ${users}`);
     if(ts !== "") {
       deleteRoomStatusMessage()
     }
@@ -39,7 +40,10 @@ app.post('/zoom/webhook', (req, res) => {
   } else if(event == "meeting.participant_left") {
     count -= 1
     if(count < 0) count = 0;
-    users.splice(users.indexOf(user), 1)
+    users = users.filter(u => {
+      return u !== user
+    })
+    console.log("a user left the meeting.", `currentUser: ${users}`);
     deleteRoomStatusMessage()
     postRoomStatusMessage()
     res.send("ok")
