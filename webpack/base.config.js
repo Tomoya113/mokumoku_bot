@@ -1,11 +1,14 @@
+const webpack = require('webpack');
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
 
+
+const BUILD_ROOT = path.join(__dirname, "../dist");
+const SRC_ROOT = path.join(__dirname, "../src");
+
 module.exports = {
-  watch: true,
-  mode: 'development',
-  entry: './index.ts',
-  target: 'node',
+  context: SRC_ROOT,
+  entry: path.resolve("src", "index.ts"),
   externals: [nodeExternals()],
   devtool: 'inline-source-map',
   module: {
@@ -27,6 +30,6 @@ module.exports = {
   },
   output: {
     filename: 'server.js',
-    path: path.resolve(__dirname, 'dist')
+    path: BUILD_ROOT
   }
 };
