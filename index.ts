@@ -18,6 +18,10 @@ const users: string[] = []
 let count = 0;
 let requestCount = 0;
 
+app.get('/', (req, res) => {
+  res.send("ok")
+})
+
 app.post('/zoom/webhook', (req, res) => {
   requestCount += 1
   console.log("requestCount:", requestCount);
