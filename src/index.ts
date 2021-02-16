@@ -16,16 +16,12 @@ const channel =  "C01MHAGJE4F"
 let ts: any = ""
 let users: string[] = []
 let count = 0;
-let requestCount = 0;
 
 app.get('/', (req, res) => {
   res.send("ok")
 })
 
 app.post('/zoom/webhook', (req, res) => {
-  requestCount += 1
-  console.log("requestCount:", requestCount);
-  
   const user = req.body.payload.object.participant.user_name
   const event = req.body.event
   if(event == "meeting.participant_joined") {
@@ -83,8 +79,6 @@ const postRoomStatusMessage = () => {
     text: generateRoomStatusText()
   }).then(response => {
     ts = response.ts
-  }).then(() => {
-    console.log("posted message");
   }).catch( error => {
     console.log(error);
   })
